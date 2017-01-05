@@ -1,8 +1,10 @@
 #Retrofit Sample
+This is source code of Z-Dia apps, you can see the apps in this link
+[![N|Solid](https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=example.iksandecade.retrofitsample)
 
 #Reference and Resource
 https://futurestud.io/tutorials/retrofit-getting-started-and-android-client
-http://ibacor.com/api#bcr-data-siswa
+http://ibacor.com/api#bcr-zodiak
 
 #Lisence
 Copyright 2017 IKSANDECADE
