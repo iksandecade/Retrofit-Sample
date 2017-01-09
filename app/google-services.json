@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "233163534383",
+    "firebase_url": "https://z-dia-bd923.firebaseio.com",
+    "project_id": "z-dia-bd923",
+    "storage_bucket": "z-dia-bd923.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233163534383:android:cf6b5be92e28cdad",
+        "android_client_info": {
+          "package_name": "example.iksandecade.retrofitsample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233163534383-p39e1mpm0se5ql13ktqcir1n31it5kbr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAK7RLg9ur21g8K7Eusy8BVU-jiZkrbCU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

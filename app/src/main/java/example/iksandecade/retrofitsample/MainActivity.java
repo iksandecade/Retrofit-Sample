@@ -51,6 +51,11 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        String data = getIntent().getStringExtra("data");
+        if(data != null){
+            Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
+        }
         pbLoading.setAlpha(0.0f);
         etDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -118,13 +123,15 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                         }
 
                     } else {
+                        isLoading(false);
                         Toast.makeText(MainActivity.this, "Opps, Something wrong", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ZodiakModel> call, Throwable t) {
-                    Toast.makeText(MainActivity.this, "Failure", Toast.LENGTH_SHORT).show();
+                    isLoading(false);
+                    Toast.makeText(MainActivity.this, "Opps, Something wrong", Toast.LENGTH_SHORT).show();
                 }
             });
         }

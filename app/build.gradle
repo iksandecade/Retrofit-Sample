@@ -7,14 +7,21 @@ android {
         applicationId "example.iksandecade.retrofitsample"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    splits{
+        density{
+            enable true
+            exclude 'ldpi', 'tvdpi', 'xxxhdpi'
+            compatibleScreens 'normal'
         }
     }
 }
@@ -33,4 +40,8 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     testCompile 'junit:junit:4.12'
+    compile 'com.google.firebase:firebase-core:10.0.1'
+    compile 'com.google.firebase:firebase-messaging:10.0.1'
 }
+
+apply plugin: 'com.google.gms.google-services'
