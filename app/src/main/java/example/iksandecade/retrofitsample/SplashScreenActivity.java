@@ -23,12 +23,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         ButterKnife.bind(this);
-        relSplash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gotoMain();
-            }
-        });
+        relSplash.setOnClickListener(view -> gotoMain());
     }
 
 

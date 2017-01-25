@@ -23,6 +23,7 @@ import butterknife.OnClick;
 import example.iksandecade.retrofitsample.model.ZodiakModel;
 import example.iksandecade.retrofitsample.model.ZodiakParcel;
 import example.iksandecade.retrofitsample.retrofit.RetrofitSampleClient;
+import example.iksandecade.retrofitsample.retrofit.ServiceGenerator;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -60,27 +61,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
         }
         pbLoading.setAlpha(0.0f);
-        etDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    Calendar now = Calendar.getInstance();
-                    DatePickerDialog dpd = DatePickerDialog.newInstance(
-                            MainActivity.this,
-                            now.get(Calendar.YEAR),
-                            now.get(Calendar.MONTH),
-                            now.get(Calendar.DAY_OF_MONTH)
-                    );
-                    Calendar c = Calendar.getInstance();
-                    dpd.setMaxDate(c);
-                    dpd.setVersion(DatePickerDialog.Version.VERSION_2);
-                    dpd.show(getFragmentManager(), "Datepickerdialog");
-                }
-            }
-        });
-        etDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        etDate.setOnFocusChangeListener((view, b) -> {
+            if (b) {
                 Calendar now = Calendar.getInstance();
                 DatePickerDialog dpd = DatePickerDialog.newInstance(
                         MainActivity.this,
@@ -94,28 +76,35 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });
+        etDate.setOnClickListener(view -> {
+            Calendar now = Calendar.getInstance();
+            DatePickerDialog dpd = DatePickerDialog.newInstance(
+                    MainActivity.this,
+                    now.get(Calendar.YEAR),
+                    now.get(Calendar.MONTH),
+                    now.get(Calendar.DAY_OF_MONTH)
+            );
+            Calendar c = Calendar.getInstance();
+            dpd.setMaxDate(c);
+            dpd.setVersion(DatePickerDialog.Version.VERSION_2);
+            dpd.show(getFragmentManager(), "Datepickerdialog");
+        });
     }
 
     @OnClick(R.id.btnSubmit)
     public void submit() {
         if (isValidate()) {
             isLoading(true);
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("http://ibacor.com")
-                    .build();
             String nama = etName.getText().toString();
             String date = etDate.getText().toString();
-            RetrofitSampleClient client = retrofit.create(RetrofitSampleClient.class);
+            RetrofitSampleClient client = ServiceGenerator.createService(RetrofitSampleClient.class);
             Observable<ZodiakModel> call = client.callZodiak(nama, date);
             call.subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<ZodiakModel>() {
                         @Override
                         public void onCompleted() {
-
+                            isLoading(false);
                         }
 
                         @Override
@@ -126,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
                         @Override
                         public void onNext(ZodiakModel zodiakModel) {
-                            isLoading(false);
                             ArrayList<ZodiakParcel> zodiakParcels = new ArrayList<ZodiakParcel>();
                             zodiakParcels.add(0, getData(zodiakModel));
                             Intent i = new Intent(MainActivity.this, DetailActivity.class);
