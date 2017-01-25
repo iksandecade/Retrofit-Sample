@@ -5,9 +5,12 @@ This is source code of Z-Dia apps, you can see the apps in this link
 and this is the preview
 
 ![](https://media.giphy.com/media/l0MYJirOrKpTrFOa4/source.gif)
+
+this branch name is RxJava where i combine Retrofit and RxJava
 #Reference and Resource
 https://futurestud.io/tutorials/retrofit-getting-started-and-android-client
 http://ibacor.com/api#bcr-zodiak
+https://medium.freecodecamp.com/rxandroid-and-retrofit-2-0-66dc52725fff#.quynh3ks2
 
 #Lisence
 Copyright 2017 IKSANDECADE
