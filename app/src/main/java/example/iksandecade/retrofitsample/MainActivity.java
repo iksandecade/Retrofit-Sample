@@ -23,10 +23,13 @@ import butterknife.OnClick;
 import example.iksandecade.retrofitsample.model.ZodiakModel;
 import example.iksandecade.retrofitsample.model.ZodiakParcel;
 import example.iksandecade.retrofitsample.retrofit.RetrofitSampleClient;
-import example.iksandecade.retrofitsample.retrofit.ServiceGenerator;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         ButterKnife.bind(this);
 
         String data = getIntent().getStringExtra("data");
-        if(data != null){
+        if (data != null) {
             Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
         }
         pbLoading.setAlpha(0.0f);
@@ -97,43 +100,49 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     public void submit() {
         if (isValidate()) {
             isLoading(true);
-            RetrofitSampleClient client = ServiceGenerator.createService(RetrofitSampleClient.class);
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .baseUrl("http://ibacor.com")
+                    .build();
             String nama = etName.getText().toString();
             String date = etDate.getText().toString();
-            Call<ZodiakModel> call = client.callZodiak(nama, date);
-            call.enqueue(new Callback<ZodiakModel>() {
-                @Override
-                public void onResponse(Call<ZodiakModel> call, Response<ZodiakModel> response) {
+            RetrofitSampleClient client = retrofit.create(RetrofitSampleClient.class);
+            Observable<ZodiakModel> call = client.callZodiak(nama, date);
+            call.subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<ZodiakModel>() {
+                        @Override
+                        public void onCompleted() {
 
-                    if (response.isSuccessful()) {
-                        isLoading(false);
-                        ArrayList<ZodiakParcel> zodiakModels = new ArrayList<ZodiakParcel>();
-                        zodiakModels.add(0, getData(response.body()));
-                        Intent i = new Intent(MainActivity.this, DetailActivity.class);
-                        i.putParcelableArrayListExtra("zodiak", zodiakModels);
-
-
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                            View sharedView = ivLogo;
-                            String transitionName = "logo";
-                            ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, sharedView, transitionName);
-                            startActivity(i, activityOptions.toBundle());
-                        } else {
-                            startActivity(i);
                         }
 
-                    } else {
-                        isLoading(false);
-                        Toast.makeText(MainActivity.this, "Opps, Something wrong", Toast.LENGTH_SHORT).show();
-                    }
-                }
+                        @Override
+                        public void onError(Throwable e) {
+                            isLoading(false);
+                            Toast.makeText(MainActivity.this, "Opps, Something wrong", Toast.LENGTH_SHORT).show();
+                        }
 
-                @Override
-                public void onFailure(Call<ZodiakModel> call, Throwable t) {
-                    isLoading(false);
-                    Toast.makeText(MainActivity.this, "Opps, Something wrong", Toast.LENGTH_SHORT).show();
-                }
-            });
+                        @Override
+                        public void onNext(ZodiakModel zodiakModel) {
+                            isLoading(false);
+                            ArrayList<ZodiakParcel> zodiakParcels = new ArrayList<ZodiakParcel>();
+                            zodiakParcels.add(0, getData(zodiakModel));
+                            Intent i = new Intent(MainActivity.this, DetailActivity.class);
+                            i.putParcelableArrayListExtra("zodiak", zodiakParcels);
+
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                                View sharedView = ivLogo;
+                                String transitionName = "logo";
+                                ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, sharedView, transitionName);
+                                startActivity(i, activityOptions.toBundle());
+                            } else {
+                                startActivity(i);
+                            }
+                        }
+                    });
+
         }
     }
 

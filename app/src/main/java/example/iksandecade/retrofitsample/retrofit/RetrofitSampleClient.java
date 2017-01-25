@@ -1,10 +1,12 @@
 package example.iksandecade.retrofitsample.retrofit;
 
+
 import example.iksandecade.retrofitsample.model.ZodiakModel;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import rx.Observable;
 
 /**
  * Created by
@@ -18,7 +20,7 @@ import retrofit2.http.Query;
 
 public interface RetrofitSampleClient {
     @GET("/api/zodiak")
-    Call<ZodiakModel> callZodiak(
+    Observable<ZodiakModel> callZodiak(
             @Query("nama") String nama,
             @Query("tgl") String tanggal
     );
